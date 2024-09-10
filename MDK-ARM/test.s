@@ -1,36 +1,30 @@
+; In The Name Of GOD  ;
 
-            ; In The Name Of GOD  ;
-INDEX_INC   EQU 1            
-BUF_SIZE    EQU ((__data_e - __data_s) / INDEX_INC)        
 
-MIN         RN  R0
-COUNTER     RN  R1
-ITEM        RN  R2
-POINTER     RN  R3
-        
-            AREA myData, DATA, READONLY, ALIGN=4
-__data_s    DCB -1, -2, -3, -4, 10, -9
-__data_e  
-            
+NUM           RN  R0 ; Numerator
+DIV           RN  R1 ; Denominator
+QUO           RN  R2 ; Quotient
+REM           RN  R3 ; remainder
+      
             
             AREA myCode, CODE, READONLY
             EXPORT __test
             
-__test      LDR     COUNTER,  =BUF_SIZE
-            CMP     COUNTER,  #0
-            BEQ     __end     
-            LDR     POINTER,  =__data_s
-            LDRSB   MIN,      [POINTER]
+__test      
+            LDR   NUM,  =1234
+            LDR   QUO,  =0
+            LDR   DIV,  =100
             
-__again     LDRSB   ITEM,     [POINTER], #1
-            CMP     ITEM,     MIN
-            BGE     __jump
-            MOV     MIN,      ITEM
+__start     CMP   NUM,  DIV
+            BLO   __end
+            SUB   NUM,  NUM,  DIV
+            ADD   QUO,  QUO, #1
+            B     __start
             
-__jump      SUBS    COUNTER,  COUNTER, #1
-            BNE     __again
-
-__end       BX  LR
+            
+            
+__end       MOV   REM,  NUM
+            BX  LR
             ALIGN
             END
               
